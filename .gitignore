@@ -1,0 +1,4 @@
+.idea/
+bin/
+internal/app/.cover
+coverage.html
