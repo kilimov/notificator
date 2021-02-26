@@ -10,12 +10,12 @@ import (
 )
 
 type UsersRepo struct {
-	collection *mongo.Collection 
+	collection *mongo.Collection
 }
 
 func (u UsersRepo) Create(ctx context.Context, user *models.User) error {
 	if user == nil {
-		return  drivers.ErrEmptyStruct
+		return drivers.ErrUserDoesntExists
 	}
 
 	user.ID = primitive.NewObjectID()
@@ -44,7 +44,7 @@ func (u UsersRepo) All(ctx context.Context) ([]models.User, error) {
 
 func (u UsersRepo) Update(ctx context.Context, user *models.User) error {
 	if user == nil {
-		return  drivers.ErrEmptyStruct
+		return drivers.ErrUserDoesntExists
 	}
 
 	filter := bson.D{{"_id", user.ID}}
@@ -69,12 +69,9 @@ func (u UsersRepo) Update(ctx context.Context, user *models.User) error {
 	return nil
 }
 
-
 func (u UsersRepo) Delete(ctx context.Context, id primitive.ObjectID) error {
 	filter := bson.D{{"_id", id}}
 	_, err := u.collection.DeleteOne(ctx, filter)
 
 	return err
 }
-
-

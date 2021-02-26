@@ -3,5 +3,5 @@ package drivers
 import "errors"
 
 var ErrInvalidConfigStruct = errors.New("invalid config structure")
-var ErrEmptyStruct = errors.New("no empty struct")
-var ErrNotModified          = errors.New("resource was not modified")
+var ErrUserDoesntExists = errors.New("user does not exists")
+var ErrNotModified = errors.New("resource was not modified")
