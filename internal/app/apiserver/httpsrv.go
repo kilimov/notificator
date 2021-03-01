@@ -2,6 +2,8 @@ package apiserver
 
 import (
 	"context"
+	"github.com/kilimov/notificator/internal/app/business"
+	"github.com/kilimov/notificator/internal/app/resources/users"
 	"log"
 	"net/http"
 	"time"
@@ -21,12 +23,14 @@ type HTTPServer struct {
 	CertFile, KeyFile *string
 	IsTesting         bool
 
+	userManager *business.UserManager
+
 	idleConnsClosed chan struct{}
 	masterCtx       context.Context
 	version         string
 }
 
-func NewHTTPServer(ctx context.Context, opts Config, version string) *HTTPServer {
+func NewHTTPServer(ctx context.Context, opts Config, userManager *business.UserManager, version string) *HTTPServer {
 	srv := &HTTPServer{
 		Address:   opts.ListenAddr,
 		FilesDir:  opts.FilesDir,
@@ -35,6 +39,8 @@ func NewHTTPServer(ctx context.Context, opts Config, version string) *HTTPServer
 		idleConnsClosed: make(chan struct{}),
 		masterCtx:       ctx,
 		version:         version,
+
+		userManager: userManager,
 	}
 
 	if opts.CertFile != "" {
@@ -69,6 +75,8 @@ func (srv *HTTPServer) setupRouter() chi.Router {
 	r.Mount(filesRoute, resources.FilesResource{FilesDir: srv.FilesDir}.Routes())
 	r.Mount("/swagger", resources.SwaggerResource{FilesPath: filesRoute}.Routes())
 	r.Mount("/version", resources.VersionResource{Version: srv.version}.Routes())
+
+	r.Mount("/api/v1/users", users.NewUserResource(srv.userManager).Routes())
 
 	return r
 }

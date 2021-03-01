@@ -21,6 +21,7 @@ package apiserver
 import (
 	"context"
 	"fmt"
+	"github.com/kilimov/notificator/internal/app/business"
 	"github.com/kilimov/notificator/internal/app/database"
 	"github.com/kilimov/notificator/internal/app/database/drivers"
 	"github.com/kilimov/notificator/internal/app/log"
@@ -51,7 +52,8 @@ func Start(version string) {
 	}
 	defer log.ErrorFnPrintln(func() error { return ds.Close(context.Background()) })
 
-	app := NewHTTPServer(appCtx, *opts, version)
+	userManager := business.NewUserManager(ds.Users())
+	app := NewHTTPServer(appCtx, *opts, userManager, version)
 	if err := app.Run(); err != nil {
 		stdlog.Println(err)
 		return

@@ -1,8 +1,8 @@
 package resources
 
 import (
-	_ "github.com/kilimov/notificator/api"
 	"github.com/go-chi/chi"
+	_ "github.com/kilimov/notificator/api"
 	"github.com/swaggo/http-swagger"
 	"path/filepath"
 )

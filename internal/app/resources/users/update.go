@@ -8,17 +8,14 @@ import (
 	"net/http"
 )
 
-func (ur UserResource) Create(w http.ResponseWriter, r *http.Request) {
+func (ur UserResource) Update(w http.ResponseWriter, r *http.Request) {
 	user := new(models.User)
 	if err := json.NewDecoder(r.Body).Decode(user); err != nil {
 		_ = render.Render(w, r, httperrors.BadRequest(err))
 		return
 	}
-
-	if err := ur.manager.Create(r.Context(), user); err != nil {
+	if err := ur.manager.Update(r.Context(), user); err != nil {
 		_ = render.Render(w, r, httperrors.UnprocessableEntity(err))
 		return
 	}
-
-	w.WriteHeader(http.StatusCreated)
 }

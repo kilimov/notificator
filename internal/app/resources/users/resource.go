@@ -2,11 +2,17 @@ package users
 
 import (
 	"github.com/go-chi/chi"
-	"go.mongodb.org/mongo-driver/mongo"
+	"github.com/kilimov/notificator/internal/app/business"
 )
 
 type UserResource struct {
-	collection *mongo.Collection
+	manager *business.UserManager
+}
+
+func NewUserResource(manager *business.UserManager) *UserResource {
+	return &UserResource{
+		manager: manager,
+	}
 }
 
 func (ur UserResource) Routes() chi.Router {
@@ -14,12 +20,11 @@ func (ur UserResource) Routes() chi.Router {
 
 	r.Group(func(r chi.Router) {
 
-		r.Post("/users", ur.Create)
-		//r.Get("/users", ur.All)
-		//r.Put("/users", ur.Update)
-		r.Delete("/users", ur.Delete)
+		r.Post("/", ur.Create)
+		r.Get("/", ur.All)
+		//r.Put("/", ur.Update)
+		r.Delete("/{id}", ur.Delete)
 	})
 
 	return r
 }
-.
